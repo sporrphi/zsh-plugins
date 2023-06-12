@@ -1,0 +1,24 @@
+#compdef project p
+
+# Keep track on the action
+if [[ ${#words[@]} -ge 2 ]]; then
+    # keep track of the command for later reference
+    local subcommand="${words[2]}"
+fi
+
+_arguments \
+    '1:Create new project entry:->subcommand' \
+    '2:Project location:->location' \
+    '3:Project alias:->alias'
+
+case "$state" in
+subcommand)
+    _values 'Project list or create new' \
+        'new[new project entry]' \
+        $(awk '{print $1}' $HOME/.config/project_jump.config)
+    ;;
+location)
+    [[ "$subcommand" != 'new' ]] && return 0
+    _path_files -/
+    ;;
+esac
